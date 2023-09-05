@@ -24,7 +24,7 @@ for i in range(20):
     first_name = fake.unique.first_name(),
     last_name = fake.unique.last_name(),
     salary = random.randint(3000,9000),
-    bank_acount =random.randint(7382977494,4859845793485)
+    bank_acount =random.randint(7382,4859845793485)
 
     )
     teachers_list.append(teacher)
@@ -136,15 +136,8 @@ for i in range(100):
     random_student= random.randint(0,len(students_list)-1)
     # choos a random student
     students_list[random_student].courses.append(courses_list[random_course])
-    # for course in courses_list:
-    #     for student in students_list:
-    #         student.courses.append(course)
+
 session.commit()
-
-
-
-
-# give the reandom course to the random student using append since
 
 
 

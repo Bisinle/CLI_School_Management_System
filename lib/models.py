@@ -14,12 +14,17 @@ engine = create_engine('sqlite:///SMS.db')
 Session = sessionmaker(bind=engine)
 session = Session()
 
+
+'''-----------------COURSE_STUDENT ASSOCIATION TABLE---------------------'''
 student_course = Table('student_course',
                                Base.metadata,
                                Column('courses_id', ForeignKey('courses.id')),
                                Column('students_id', ForeignKey('students.id')),
 )
 
+
+
+'''-------------------------S T U D E N T S ------------T A B L E------------------------'''
 class Student(Base):
     __tablename__ = 'students'
 
@@ -29,9 +34,27 @@ class Student(Base):
     gender = Column(String())
     courses = relationship('Course', secondary = student_course, back_populates='students')
     
+#---------------------------------------------------------------------------------
 
+# @classmethod
+# def display_all_students(cls):
+#     return session.query(cls).all()
+
+
+#---------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------
     def __repr__(self):
         return f"('id':{self.id}, 'fname': {self.first_name}, 'lname': {self.last_name}, gender: {self.gender})"
+
+
+
+
+'''-------------------------T E A C H E R S ------------T A B L E------------------------'''
 
 class Teacher(Base):
     __tablename__ = 'teachers'
@@ -44,7 +67,10 @@ class Teacher(Base):
 
     course = relationship('Course', backref='teacher')
     def __repr__(self):
-        return f"('id':{self.id}, 'fname': {self.first_name}, 'lname': {self.last_name}, 'gender': {self.salary}, 'bank_acount': {self.bank_acount})"
+        return f"('id':{self.id}, 'fname': {self.first_name}, 'lname': {self.last_name}, 'salary': {self.salary}, 'bank_acount': {self.bank_acount})"
+
+
+'''------------------------C O U R S E S ------------T A B L E------------------------'''
 
 class Course(Base):
     __tablename__ = 'courses'
