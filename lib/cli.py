@@ -194,6 +194,31 @@ def add_course(course_name, teacher_full_name,room,credit_hours):
         click.echo('course  already exists in the database ')
 
 
+
+'''-------------------register a ----S T U D E N T---- for a ----C O U R S E----- '''
+# get the course names from the table 
+cours_names= session.query(Course.course_name).all()
+# print(cours_names)
+#declare an empty dictto populate with numbers as keys and  the course_names values
+course_options = {}
+#create the dictionary
+for num , course in zip(range(0,len(cours_names)), cours_names):
+    course_options.update({num:course})
+
+
+@mycommands.command()
+@click.option('--student_name' , '-sn', prompt = 'Enter student_name you want to register')
+@click.option('--course_name' , '-cn', prompt = 'Enter the course name for the student')
+def course_registrations(student_name,course_name):
+    if isinstance(student_name,str) and isinstance(course_name,str):
+        student_name_aplitted = student_name.split(' ')
+        # filter using the splitted fullname---goal is to optian the user id to pass to the course table
+        stud_instance = session.query(Student).filter_by(first_name=student_name_aplitted[0].title(), last_name = student_name_aplitted[1].title()).first()
+        course_instance = session.query(Course).filter(Course.course_name.like(f'%{course_name.title()}%')).first()
+        print(stud_instance)
+        print(course_instance)
+
+
             
 
 if __name__ == "__main__":
