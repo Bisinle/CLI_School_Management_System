@@ -84,7 +84,7 @@ class Course(Base):
 
   
     def __repr__(self):
-        return f"('id':{self.id}, 'course_name': {self.course_name}, 'room': {self.room})"
+        return f"('id':{self.id}, 'course_name': {self.course_name}, 'room': {self.room}, 'credit_hours; {self.credit_hours}, 'teachers_is': {self.teachers_id})"
 
 
 

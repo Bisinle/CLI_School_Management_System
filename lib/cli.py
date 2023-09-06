@@ -3,7 +3,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from models import Course, Teacher,Student
+from models import Course, Teacher,Student,student_course
 import click
 
 
@@ -202,21 +202,69 @@ cours_names= session.query(Course.course_name).all()
 #declare an empty dictto populate with numbers as keys and  the course_names values
 course_options = {}
 #create the dictionary
-for num , course in zip(range(0,len(cours_names)), cours_names):
+for num , course in zip(range(1,len(cours_names)), cours_names):
     course_options.update({num:course})
 
 
 @mycommands.command()
-@click.option('--student_name' , '-sn', prompt = 'Enter student_name you want to register')
-@click.option('--course_name' , '-cn', prompt = 'Enter the course name for the student')
-def course_registrations(student_name,course_name):
-    if isinstance(student_name,str) and isinstance(course_name,str):
-        student_name_aplitted = student_name.split(' ')
-        # filter using the splitted fullname---goal is to optian the user id to pass to the course table
-        stud_instance = session.query(Student).filter_by(first_name=student_name_aplitted[0].title(), last_name = student_name_aplitted[1].title()).first()
-        course_instance = session.query(Course).filter(Course.course_name.like(f'%{course_name.title()}%')).first()
-        print(stud_instance)
-        print(course_instance)
+@click.option('--student_full_name' , '-sn', prompt = 'Enter student_full_name you want to register')
+# @click.option('--course_name' , '-cn', prompt = 'Enter the course name for the student', type=click.Choice(course_options))
+def course_registrations(student_full_name):
+        '''register a student for a course'''
+        if isinstance(student_full_name,str) :
+            splitted_stud_name = (student_full_name.split(' '))         
+            # filter using the splitted fullname---goal is to optian the user id to pass to the course table
+            stud_instance = session.query(Student).filter_by(first_name=splitted_stud_name[0].title(), last_name = splitted_stud_name[1].title()).first()
+            if stud_instance is not None:
+                # # display the courses for the student to choose
+                for  key,course, in course_options.items():
+                    click.echo(f" {key}--{course[0]}")
+                
+                # enter the number corresponding to the course you want
+                key = int((click.prompt('choose a course number')))
+                # if the course key exist, then get the course isntance from the table
+
+                if (key) in course_options.keys() :
+                        chosen_course = (course_options[key])
+                        cours_instance = session.query(Course).filter_by(course_name = chosen_course[0]).first()
+                        # click.echo(cours_instance)
+                        
+                        #-------------------------------------------------------------
+                        # brefore we add to the table, check if the record EXIST
+                        print(stud_instance)
+                        print(cours_instance)
+                        does_record_exist= session.query(student_course).filter_by(students_id = stud_instance.id, courses_id = cours_instance.id).first()
+                        print(does_record_exist)
+                        if does_record_exist  is None:
+                            stud_instance.courses.append(cours_instance)
+                            session.commit()
+                            click.echo('\n-----registrations successfull------')
+                           
+                        else:
+                            click.echo('\n--------- !! E R R O R !! ---------------------')
+                            click.echo('\n---studen  already  registered for this course----')
+                else:
+                    click.echo('\n--------- !! E R R O R !! ---------------------')
+                    click.echo('\n----course does not exist---')
+      
+            else:
+                click.echo('\n--------- !! E R R O R !! ---------------------')  
+                click.echo('student does not Exist')
+
+
+
+    
+        
+
+
+            
+    # if isinstance(student_name,str) and isinstance(course_name,str):
+    #     student_name_aplitted = student_name.split(' ')
+    #     # filter using the splitted fullname---goal is to optian the user id to pass to the course table
+    #     stud_instance = session.query(Student).filter_by(first_name=student_name_aplitted[0].title(), last_name = student_name_aplitted[1].title()).first()
+    #     course_instance = session.query(Course).filter(Course.course_name.like(f'%{course_name.title()}%')).first()
+    #     print(stud_instance)
+    #     print(course_instance)
 
 
             
