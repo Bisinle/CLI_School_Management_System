@@ -18,8 +18,8 @@ session = Session()
 '''-----------------COURSE_STUDENT ASSOCIATION TABLE---------------------'''
 student_course = Table('student_course',
                                Base.metadata,
-                               Column('courses_id', ForeignKey('courses.id')),
-                               Column('students_id', ForeignKey('students.id')),
+                               Column('courses_id', ForeignKey('courses.id',ondelete="CASCADE")),
+                               Column('students_id', ForeignKey('students.id',ondelete="CASCADE")),
 )
 
 
@@ -32,7 +32,7 @@ class Student(Base):
     first_name = Column(String())
     last_name = Column(String())
     gender = Column(String())
-    courses = relationship('Course', secondary = student_course, back_populates='students')
+    courses = relationship('Course', secondary=student_course, back_populates='students', cascade='all, delete')
     
 #---------------------------------------------------------------------------------
 
@@ -80,7 +80,7 @@ class Course(Base):
     room = Column(Integer())
     credit_hours = Column(Integer())
     teachers_id = Column(Integer(), ForeignKey('teachers.id'))
-    students = relationship('Student', secondary = student_course, back_populates='courses')
+    students = relationship('Student', secondary = student_course, back_populates='courses',passive_deletes=True,)
 
   
     def __repr__(self):

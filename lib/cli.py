@@ -39,8 +39,8 @@ student1 = session.query(Student).first()
 def mycommands():
     pass
 
-
-'''------------------------ A D D student------------------------'''
+''' ------------------S T U D E N T_________S E C T I O N-----------------'''
+# '''------------------------ A D D student------------------------'''
 @mycommands.command()
 @click.option("--first_name" ,'-fn',prompt='Enter FNAME', type = str)
 @click.option("--last_name" ,'-ln',prompt='Enter LNAME', type = str)
@@ -77,46 +77,75 @@ def add_student( first_name,last_name,gender):
 
 
 
-'''------------------------D E L E T E student------------------------'''
+# '''------------------------D E L E T E student------------------------'''
 
-# @mycommands.command()
-# @click.option("--sid",type=int, prompt = 'Enter student id')
-# def delete_student(sid):
-#     '''delete a student by passing their name'''
-#     stud = session.query(Student).filter_by(id=sid).first()
-#     session.delete(stud)
-#     session.commit()
-#     click.echo('student deleted successfully')
+@mycommands.command()
+@click.option("--student_full_name",'-sfn', prompt = 'Enter student full name')
+def delete_student(student_full_name):
+    '''delete a student by passing their name'''
+    splitted_stud_name = (student_full_name.split(' '))        
+    fname =  splitted_stud_name[0].title()
+    lname = splitted_stud_name[1].title()
+    stud_instance = session.query(Student).filter(Student.first_name.like(f"%{fname}%"), Student.last_name.like(f"%{lname}%")).first()
+    # stud = session.query(Student).filter_by(first_name=).first()
+    # print(stud_instance)
+    if stud_instance is not None:
+        session.delete(stud_instance)
+        session.commit()
+        click.echo('student deleted successfully')
+    else:
+        click.echo('student does not exist') 
 
-'''------------------------U P D A T E  student------------------------'''
-# @mycommands.command()
-# @click.option("--sid",type=int, prompt = 'Enter student id')
-# @click.option("--target_full_name", prompt = 'Enter the name you want to  change')
-# @click.option("--new_full_name", prompt = 'Enter the name you want to change it to ')
-# @click.option("--sid", prompt = 'Enter student last name to update')
-# def update_student(target_full_name,new_full_name):
-#     ''' update a student by entering full names seperated by space '''
-#     target_full_name_splitted = target_full_name.split(' ')
-#     new_full_name_splitted = new_full_name.split(' ')
-#     print(f"{target_full_name_splitted} was updated to  {new_full_name_splitted}")
+    # we need to delete the the sutdent record from the association table aswell
+    # i could not figure cascasde out
+    stud_record= session.query(student_course).filter_by(students_id = stud_instance.id)
+    stud_record.delete()
+    session.commit()
     
-#     # delet or update the student that matches the id
-#     stud = session.query(Student).filter_by(id=sid).update({
-#         Student.gender : 'U'
-#     })
-#     stud = session.query(Student).filter_by(first_name=target_full_name_splitted[0], last_name = target_full_name_splitted[1]).update({
-#         Student.first_name : new_full_name_splitted[0],
-#         Student.last_name : new_full_name_splitted[1] })
 
-#     session.commit()  
-#     click.echo('updated  successfully')
 
-'''------------------------D I S P L A Y students------------------------'''
+# '''------------------------U P D A T E  student------------------------'''
+
+@mycommands.command()
+@click.option("--target_full_name", prompt = 'Enter the name you want to  change')
+@click.option("--new_full_name", prompt = 'Enter the name you want to change it to ')
+# @click.option("--sid", prompt = 'Enter student last name to update')
+
+def update_student(target_full_name,new_full_name):
+    ''' update a student by entering full names seperated by space '''
+    # check if the name contain first and last name
+    if all(len(name.split(' '))==2 for name in (target_full_name, new_full_name)):
+        target_fname = target_full_name.split(' ')[0]
+        target_lname = target_full_name.split(' ')[1]
+        new_fname = new_full_name.split(' ')[0]
+        new_lname= new_full_name.split(' ')[1]
+    
+    
+        stud = session.query(Student).filter(Student.first_name.like(f"%{target_fname}%"), Student.last_name.like(f"%{target_lname}%")).update({
+        Student.first_name : new_fname,
+        Student.last_name : new_lname })        
+         
+        print(f"{target_full_name} was updated to  {new_full_name}")
+    else:
+        click.echo('\n-----!! E R R O R R !!----------')
+        click.echo('Enter full names please')
+
+    session.commit()  
+    
+
+
+
+# '''------------------------D I S P L A Y students------------------------'''
+@mycommands.command()
+def display_all_students():
+    click.echo(session.query(Student).all())
+
 # @mycommands.command()
 # @click.option()
 
+'''--------------- T E A C H E R________S E C T I O N ----------------------'''
 
-'''---------------A D D  TEACHER-------------------'''
+# '''---------------A D D  TEACHER-------------------'''
 @mycommands.command()
 @click.option("--first_name" ,'-fn',prompt='Enter FNAME', type = str)
 @click.option("--last_name" ,'-ln',prompt='Enter LNAME', type = str)
@@ -151,8 +180,8 @@ def add_teacher( first_name,last_name,salary,bank_account):
 
 
 
-
-'''------------------ A D D COURSES---------------------'''
+'''------------------- C O U R S E________S E C T I O N----------------- '''
+# '''------------------ A D D COURSES---------------------'''
 @mycommands.command()
 @click.option("--course_name" ,'-cn',prompt='Enter the course_name', type = str)
 @click.option("--room",'-r',prompt='Enter the venu', type = int)
@@ -201,10 +230,8 @@ cours_names= session.query(Course.course_name).all()
 # print(cours_names)
 #declare an empty dictto populate with numbers as keys and  the course_names values
 course_options = {}
-#create the dictionary
 for num , course in zip(range(1,len(cours_names)), cours_names):
     course_options.update({num:course})
-
 
 @mycommands.command()
 @click.option('--student_full_name' , '-sn', prompt = 'Enter student_full_name you want to register')
@@ -212,6 +239,7 @@ for num , course in zip(range(1,len(cours_names)), cours_names):
 def course_registrations(student_full_name):
         '''register a student for a course'''
         if isinstance(student_full_name,str) :
+            #split the name to first and last
             splitted_stud_name = (student_full_name.split(' '))         
             # filter using the splitted fullname---goal is to optian the user id to pass to the course table
             stud_instance = session.query(Student).filter_by(first_name=splitted_stud_name[0].title(), last_name = splitted_stud_name[1].title()).first()
@@ -223,31 +251,28 @@ def course_registrations(student_full_name):
                 # enter the number corresponding to the course you want
                 key = int((click.prompt('choose a course number')))
                 # if the course key exist, then get the course isntance from the table
-
                 if (key) in course_options.keys() :
                         chosen_course = (course_options[key])
                         cours_instance = session.query(Course).filter_by(course_name = chosen_course[0]).first()
                         # click.echo(cours_instance)
                         
                         #-------------------------------------------------------------
-                        # brefore we add to the table, check if the record EXIST
-                        print(stud_instance)
-                        print(cours_instance)
+                        # brefore we add to the table, check if the record EXIST                       
                         does_record_exist= session.query(student_course).filter_by(students_id = stud_instance.id, courses_id = cours_instance.id).first()
-                        print(does_record_exist)
+                        #if does not exist, add to the table
                         if does_record_exist  is None:
                             stud_instance.courses.append(cours_instance)
                             session.commit()
                             click.echo('\n-----registrations successfull------')
-                           
-                        else:
+                        
+                        else:# elsethe record already exist in the table
                             click.echo('\n--------- !! E R R O R !! ---------------------')
                             click.echo('\n---studen  already  registered for this course----')
-                else:
+                else:# else if the course cannot be found in the courses table
                     click.echo('\n--------- !! E R R O R !! ---------------------')
                     click.echo('\n----course does not exist---')
       
-            else:
+            else:#if the studetn instance cannot be found in the table
                 click.echo('\n--------- !! E R R O R !! ---------------------')  
                 click.echo('student does not Exist')
 
@@ -258,13 +283,6 @@ def course_registrations(student_full_name):
 
 
             
-    # if isinstance(student_name,str) and isinstance(course_name,str):
-    #     student_name_aplitted = student_name.split(' ')
-    #     # filter using the splitted fullname---goal is to optian the user id to pass to the course table
-    #     stud_instance = session.query(Student).filter_by(first_name=student_name_aplitted[0].title(), last_name = student_name_aplitted[1].title()).first()
-    #     course_instance = session.query(Course).filter(Course.course_name.like(f'%{course_name.title()}%')).first()
-    #     print(stud_instance)
-    #     print(course_instance)
 
 
             

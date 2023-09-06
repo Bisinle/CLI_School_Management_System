@@ -3,7 +3,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from models import Student,Teacher,Course
+from models import Student,Teacher,Course,student_course
 
 
 if __name__ == '__main__':
@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
 
 '''-------------TEACHER METHODS---------------'''
-teacher1 = session.query(Teacher).first()
+teacher1 = session.query(student_course).tilter()
 print(teacher1)
 
 

@@ -128,16 +128,47 @@ session.commit()
 
 
 '''------populating the student_courses Association table-------'''
-session.query(student_course).delete()
-# this is many to many so we are free to choose the range
-for i in range(100):
-    # in each range, choose a random course
-    random_course= random.randint(0,len(courses_list)-1)
-    random_student= random.randint(0,len(students_list)-1)
-    # choos a random student
-    students_list[random_student].courses.append(courses_list[random_course])
+# session.query(student_course).delete()
+# student_course_list = []
+# # this is many to many so we are free to choose the range
+# for i in range(100):
+#     # in each range, choose a random course
+#     random_course= random.randint(0,len(courses_list)-1)
+#     random_student= random.randint(0,len(students_list)-1)
+#     # choos a random student\
+#     student =students_list[random_student]
+#     course = courses_list[random_course]
+#     record = session.query(student_course).filter_by(courses_id= course.id,students_id = student.id).first()
+#     if record is None:
+#         student.courses.append(course)
+# # print(student_course_list)
+# session.commit()
 
+
+session.query(student_course).delete()
+student_course_list = []
+# this is many to many so we are free to choose the range
+
+for _ in range(100):
+    random_course = random.choice(courses_list)
+    random_student = random.choice(students_list)
+
+    # Check if the combination already exists
+    if random_course not in random_student.courses:
+        random_student.courses.append(random_course)
+
+# Commit the changes to the database
 session.commit()
+# print(student_course_list)
+# session.commit()
+records = session.query(student_course).all()
+empty_list=[]
+for i in records:
+    fount= (records.count(i))
+    
+    empty_list.append(fount)
+    
+print(empty_list)
 
 
 
