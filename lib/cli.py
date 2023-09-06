@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 from models import Course, Teacher,Student,student_course
 import click
+import random
 
 
 engine = create_engine('sqlite:///SMS.db')
@@ -83,12 +84,11 @@ def add_student( first_name,last_name,gender):
 @click.option("--student_full_name",'-sfn', prompt = 'Enter student full name')
 def delete_student(student_full_name):
     '''delete a student by passing their name'''
-    splitted_stud_name = (student_full_name.split(' '))        
-    fname =  splitted_stud_name[0].title()
-    lname = splitted_stud_name[1].title()
-    stud_instance = session.query(Student).filter(Student.first_name.like(f"%{fname}%"), Student.last_name.like(f"%{lname}%")).first()
-    # stud = session.query(Student).filter_by(first_name=).first()
-    # print(stud_instance)
+    #destructure and split the name to first and last
+    fname,lname= (student_full_name.split(' '))        
+    stud_instance = session.query(Student).filter(Student.first_name.like(f"%{fname.title()}%"), Student.last_name.like(f"%{lname.title()}%")).first()
+    
+    # delete the student fron student table
     if stud_instance is not None:
         session.delete(stud_instance)
         session.commit()
@@ -115,10 +115,8 @@ def update_student(target_full_name,new_full_name):
     ''' update a student by entering full names seperated by space '''
     # check if the name contain first and last name
     if all(len(name.split(' '))==2 for name in (target_full_name, new_full_name)):
-        target_fname = target_full_name.split(' ')[0]
-        target_lname = target_full_name.split(' ')[1]
-        new_fname = new_full_name.split(' ')[0]
-        new_lname= new_full_name.split(' ')[1]
+        target_fname, target_lname = target_full_name.split(' ')      
+        new_fname, new_lname = new_full_name.split(' ')
     
     
         stud = session.query(Student).filter(Student.first_name.like(f"%{target_fname}%"), Student.last_name.like(f"%{target_lname}%")).update({
@@ -138,8 +136,22 @@ def update_student(target_full_name,new_full_name):
 # '''------------------------D I S P L A Y students------------------------'''
 @mycommands.command()
 def display_all_students():
-    click.echo(session.query(Student).all())
+    '''display all the students in our records'''
+    for student in session.query(Student).all():
+        click.echo(click.style(student,fg='cyan',bold=True))
 
+# ---------------------- S T U D E N T courses---------------------
+@mycommands.command()
+@click.option("--student_full_name", prompt = 'Enter student full name')
+def student_courses(student_full_name):
+    '''display all the courses a particular student is taking'''
+    fname,lname= (student_full_name.split(' '))        
+    student = session.query(Student).filter(Student.first_name.like(f"%{fname.title()}%"), Student.last_name.like(f"%{lname.title()}%")).first()
+    
+    click.echo( f"--- studetn is taking {len(student.courses)} courses, ")
+    for course in student.courses:
+        print('---------------------------------------------------')
+        click.echo(course)
 # @mycommands.command()
 # @click.option()
 
@@ -180,6 +192,42 @@ def add_teacher( first_name,last_name,salary,bank_account):
 
 
 
+
+
+# '''------------------ D E L E T E     teacher------------------'''
+@mycommands.command()
+@click.option('--teacher_full_name', '-tf', prompt = "Enter the teacher's full name")
+def delete_teacher(teacher_full_name):
+    '''deletes a teacher and updates course table'''
+    if len(teacher_full_name.split(' ')) == 2:
+        fname,lname = teacher_full_name.split(' ')
+        
+        # let's check if the teacher exists in the records
+        teacher= session.query(Teacher).filter( Teacher.first_name.like(f"%{fname}%"), Teacher.last_name.like(f"%{lname}%")).first()
+        # let's find the course instance that is assigned to the teacher above
+        if teacher is not None:
+            print('--------------------')
+            # find another teacher to assign the course to 
+            assign_course_to_another_teacher_id =(random.choice([teach.id for teach in session.query(Teacher).all()]))
+            # update the teachers_id column in the course with the new teacher id
+            assigned_course = session.query(Course).filter_by(teachers_id = teacher.id).update({
+                Course.teachers_id : assign_course_to_another_teacher_id
+            })
+            # print(,assign_course_to_another_teacher_id)#' this teacher id will replace the old one-->'
+            #delete the old teacher
+            session.delete(teacher) 
+            session.commit()           
+           
+        else:
+            click.echo('Not found')
+    else:
+        click.echo('Please enter full name spereted by space')
+
+
+
+
+
+
 '''------------------- C O U R S E________S E C T I O N----------------- '''
 # '''------------------ A D D COURSES---------------------'''
 @mycommands.command()
@@ -204,7 +252,8 @@ def add_course(course_name, teacher_full_name,room,credit_hours):
             )
             # print(course)
         else:
-            click.echo("Teacher does not exist")
+            click.echo(click.style('\n--------- !! E R R O R !! ---------------------',fg='red',bold=True))  
+            click.echo(click.style("Teacher does not exist",fg='red',bold=True))
     else:
         click.echo( '-------please enter the credentials using the correct data types----------')
     course_exists = session.query(Course).filter_by(
@@ -218,13 +267,14 @@ def add_course(course_name, teacher_full_name,room,credit_hours):
     if course_exists is  None:
         session.add(course)
         session.commit()
-        click.echo('course  added successfully ')
+        click.echo(click.style('course  added successfully ',fg='green', bold=True))
     else:
-        click.echo('course  already exists in the database ')
+        click.echo(click.style('\n--------- !! E R R O R !! ---------------------',fg='red',bold=True))  
+        click.echo(click.style('course  already exists in the database ',fg='red',bold=True))
 
 
 
-'''-------------------register a ----S T U D E N T---- for a ----C O U R S E----- '''
+'''------------------- C O U R S E_______R E G I S T E R ----------- '''
 # get the course names from the table 
 cours_names= session.query(Course.course_name).all()
 # print(cours_names)
@@ -263,18 +313,18 @@ def course_registrations(student_full_name):
                         if does_record_exist  is None:
                             stud_instance.courses.append(cours_instance)
                             session.commit()
-                            click.echo('\n-----registrations successfull------')
+                            click.echo(click.style('\n-----registrations successfull------',fg='green'))
                         
                         else:# elsethe record already exist in the table
-                            click.echo('\n--------- !! E R R O R !! ---------------------')
-                            click.echo('\n---studen  already  registered for this course----')
+                            click.echo(click.style('\n--------- !! E R R O R !! ---------------------',fg='red',bold=True))
+                            click.echo(click.style('\n---studen  already  registered for this course----',fg='red'))
                 else:# else if the course cannot be found in the courses table
-                    click.echo('\n--------- !! E R R O R !! ---------------------')
-                    click.echo('\n----course does not exist---')
+                    click.echo(click.style('\n--------- !! E R R O R !! ---------------------',fg='red',bold=True))
+                    click.echo(click.style('\n----course does not exist---',fg='red'))
       
             else:#if the studetn instance cannot be found in the table
-                click.echo('\n--------- !! E R R O R !! ---------------------')  
-                click.echo('student does not Exist')
+                click.echo(click.style('\n--------- !! E R R O R !! ---------------------',fg='red',bold=True))  
+                click.echo(click.style('student does not Exist',fg='red'))
 
 
 
