@@ -1,6 +1,4 @@
-# Restaurant Review System with SQLAlchemy
-
-## Phase 3 Week 3 Code Challenge
+# CLI School Management System
 
 ![python version](https://img.shields.io/badge/python-3.10.12+-blue.svg)
 ![faker version](https://img.shields.io/badge/faker-1.12.0-mint.svg)
