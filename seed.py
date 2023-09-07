@@ -4,10 +4,9 @@ from faker import Faker
 
 import random
 
-from sqlalchemy import create_engine,Table
-from sqlalchemy.orm import sessionmaker
 
-from models import  *
+from database.Session_and_Base import *
+from models.models import  *
 
 if __name__ == '__main__':
     engine = create_engine('sqlite:///SMS.db')

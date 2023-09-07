@@ -1,25 +1,12 @@
 # models.py
-from sqlalchemy import create_engine, func
-from sqlalchemy import ForeignKey, Table, Column, Integer, String, DateTime, MetaData
-from sqlalchemy.orm import relationship, declarative_base, sessionmaker
-
-convention = {
-    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-}
-metadata = MetaData(naming_convention=convention)
-
-Base = declarative_base(metadata=metadata)
-
-engine = create_engine('sqlite:///SMS.db')
-Session = sessionmaker(bind=engine)
-session = Session()
+from database.Session_and_Base import *
 
 
 '''-----------------COURSE_STUDENT ASSOCIATION TABLE---------------------'''
 student_course = Table('student_course',
                                Base.metadata,
-                               Column('courses_id', ForeignKey('courses.id',ondelete="CASCADE")),
-                               Column('students_id', ForeignKey('students.id',ondelete="CASCADE")),
+                               Column('courses_id', ForeignKey('courses.id')),
+                               Column('students_id', ForeignKey('students.id')),
 )
 
 
@@ -32,22 +19,11 @@ class Student(Base):
     first_name = Column(String())
     last_name = Column(String())
     gender = Column(String())
-    courses = relationship('Course', secondary=student_course, back_populates='students', cascade='all, delete')
+    courses = relationship('Course', secondary=student_course, back_populates='students')
     
 #---------------------------------------------------------------------------------
 
-# @classmethod
-# def display_all_students(cls):
-#     return session.query(cls).all()
 
-
-#---------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------
     def __repr__(self):
         return f"('id':{self.id}, 'fname': {self.first_name}, 'lname': {self.last_name}, gender: {self.gender})"
 
@@ -80,7 +56,7 @@ class Course(Base):
     room = Column(Integer())
     credit_hours = Column(Integer())
     teachers_id = Column(Integer(), ForeignKey('teachers.id'))
-    students = relationship('Student', secondary = student_course, back_populates='courses',passive_deletes=True,)
+    students = relationship('Student', secondary = student_course, back_populates='courses')
 
   
     def __repr__(self):
