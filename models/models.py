@@ -91,19 +91,6 @@ class Course(Base):
         return f"('id':{self.id}, 'course_name': {self.course_name}, 'room': {self.room}, 'credit_hours; {self.credit_hours}, 'teachers_is': {self.teachers_id})"
     
 
-# class Admin(Base):
-#     __tablename__='admins'
-
-#     id = Column(Integer(), primary_key=True)
-#     name = Column(String())
-#     email = Column(String())
-#     password = Column(String())
-
-
-#     def __repr__(self):
-#         return f"('id':{self.id}, 'name': {self.name}, 'email': {self.email}, 'password; {self.password})"
-    
-
 
 
 
