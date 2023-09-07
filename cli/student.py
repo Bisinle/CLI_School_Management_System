@@ -6,6 +6,7 @@ import os
 # Add the project_directory to the Python path
 project_directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(project_directory)
+from sqlalchemy.inspection import inspect
 
 # Now you can import from models
 from models.models import *
@@ -73,16 +74,24 @@ def delete_student(student_full_name):
     # delete the student fron student table
     if stud_instance is not None:
         session.delete(stud_instance)
+        # session.commit()
+        #check if the student with this id exists in the grade table and delete it
+        stud_record= session.query(Grade).filter_by(student_id = stud_instance.id)
+        
+        stud_record.delete()
         session.commit()
-        click.echo('student deleted successfully')
+       
+        click.echo(click.style('\nstudent deleted successfully',fg='white',bg='green'))
     else:
-        click.echo('student does not exist') 
+        click.echo(click.style('\n----------!! E R R O R R !!----------------',fg='red')) 
+        click.echo(click.style('student does not exist',fg='red')) 
 
-    # we need to delete the the sutdent record from the association table aswell
-    # i could not figure cascasde out
-    stud_record= session.query(student_course).filter_by(students_id = stud_instance.id)
-    stud_record.delete()
-    session.commit()
+    # # we need to delete the the sutdent record from the association table aswell
+    # # i could not figure cascasde out
+
+
+    # inspector= inspect(engine)
+    # print( [col['name'] for col in inspector.get_columns(Grade.__table__.name)])
     
 
 

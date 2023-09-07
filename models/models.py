@@ -17,8 +17,8 @@ class Grade(Base):
     __tablename__ = 'grades'
     
     id = Column(Integer(), primary_key=True)
-    student_id = Column('students_id', Integer(), ForeignKey('students.id'))
-    course_id = Column('courses_id', Integer(), ForeignKey('courses.id'))
+    student_id = Column('student_id', Integer(), ForeignKey('students.id'))
+    course_id = Column('course_id', Integer(), ForeignKey('courses.id'))
     mark=Column(Integer())
     grade=Column(String(1))
 
@@ -43,7 +43,7 @@ class Student(Base):
     first_name = Column(String())
     last_name = Column(String())
     gender = Column(String())
-    grade = relationship('Grade',  back_populates='student')
+    grade = relationship('Grade',  back_populates='student',cascade='all, delete-orphan')
     courses = association_proxy('grade', 'course')
     
 #---------------------------------------------------------------------------------
