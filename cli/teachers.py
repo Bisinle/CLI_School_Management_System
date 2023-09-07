@@ -194,6 +194,145 @@ def teacher_courses(teacher_full_name):
         click.echo(click.style(course,fg='white',bg='magenta'))
 
 
+'''---------------G R A D E _________S T U D E N T S____________C O U R S E'''
+
+# ---------G R A D E_____________-C H E C K E R-------------------------------
+def grade_checker(marks):
+    if marks >= 0 and marks <= 100:
+        if marks >= 75 and marks <= 100:
+            return 'A'
+        elif marks >= 67 and marks < 75:
+            return 'B'
+        elif marks >= 57 and marks < 67:
+            return 'C'
+        elif marks > 50 and marks < 57:
+            return 'D'
+        elif marks >= 40 and marks < 50:
+            return 'E'
+        else:
+            return'F'
+    else:
+        return
+
+@teacher_command.command()
+@click.option("--teacher_full_name", prompt = 'Enter teacher full name')
+def grade_a_student(teacher_full_name):
+    '''grade a student'''
+    #-------------------------------------------------------------------
+    # get the course names from the table     
+    cours_names= session.query(Course.course_name).all()
+    # declare an empty dictto populate with numbers as keys and  the course_names values
+    course_options = {}
+    for num , course in zip(range(1,len(cours_names)+1), cours_names):
+        course_options.update({num:course})
+        # print({num:course})
+    # print(course_options)
+#-------------------------------------------------------------------
+
+
+    if len(teacher_full_name.split(' ')) ==2 and isinstance(teacher_full_name,str):
+        fname,lname= teacher_full_name.split(' ')
+        #check if the teacher EXISTS in the databse
+        teacher= session.query(Teacher).filter( Teacher.first_name.like(f"%{fname.title()}%"), Teacher.last_name.like(f"%{lname.title()}%")).first()
+        # check if the teacher exisits in the database
+        if teacher is not None:
+            # prompt the teacher to enter the user name
+            student_name = str((click.prompt('Enter student full_name')))
+            #check if the student name is a string and containes  names
+            if len(student_name.split(' ')) ==2 and isinstance(student_name,str):
+            #destructure the student name into first and last name
+                stud_fname, stud_lname = student_name.split(' ')
+                # check if the studetn exists in the database
+                stud_instance = session.query(Student).filter(Student.first_name.like(f"%{stud_fname.title()}%"), Student.last_name.like(f"%{stud_lname.title()}%")).first()
+                # if stud_instance is not None:
+                if stud_instance is not None:
+                    for  key,course, in course_options.items():
+                        click.echo(f" {key}--{course[0]}")
+                              
+                    # enter the number corresponding to the course you want
+                    key = int((click.prompt('choose a course number')))
+                    # if the course key exist, then get the course isntance from the table
+                    if (key) in course_options.keys() :
+                            chosen_course = (course_options[key])
+                            cours_instance = session.query(Course).filter_by(id =key).first()
+                            # print(stud_instance)
+                            # click.echo(cours_instance)
+                            # take the student grade
+                            marks = int((click.prompt('Enter student marks')))
+                            grade = grade_checker(marks)
+                            if grade is not None:
+                                # create the grade instance and add to the grade table
+                                grade_instance = Grade(
+                                    student_id=stud_instance.id,
+                                    course_id=cours_instance.id,
+                                    mark=marks,
+                                    grade=grade,
+                                )
+                                #check if grade already exists in the database
+                                grade_exists= session.query(Grade).filter_by(student_id=stud_instance.id, course_id=cours_instance.id,).first()
+                                if grade_exists is None:
+                                    session.add(grade_instance)
+                                    session.commit()
+                                    
+                                    click.echo(click.style('\n----graded successfully ---',fg='white',bg='green'))
+                                else:
+                                    click.echo(click.style('\n--------- !! E R R O R !! ---------------------',fg='red',bold=True))
+                                    click.echo(click.style('\n----"You have already graded this course for this studen"---',fg='red'))
+
+
+
+                            else:
+                                click.echo(click.style('\n--------- !! E R R O R !! ---------------------',fg='red',bold=True))
+                                click.echo(click.style('\n----please Enter valid Marks---',fg='red'))
+
+
+
+
+
+
+                    else:# else if the course cannot be found in the courses table
+                        click.echo(click.style('\n--------- !! E R R O R !! ---------------------',fg='red',bold=True))
+                        click.echo(click.style('\n----course does not exist---',fg='red'))
+           
+                        
+                else:
+                    click.echo(click.style('\n--------- !! E R R O R !! ---------------------',fg='red',bold=True))  
+                    click.echo(click.style(f' student ({stud_fname} {stud_lname}) does not exist in our databse',fg='red'))
+            else:
+                click.echo(click.style('\n--------- !! E R R O R !! ---------------------',fg='red',bold=True))  
+                click.echo(click.style('Enter student full name (string)',fg='red'))
+
+        else:
+            click.echo(click.style('\n--------- !! E R R O R !! ---------------------',fg='red',bold=True))  
+            click.echo(click.style(f'student ({fname} {lname}) does not exist in our databse',fg='red'))
+    else:
+           click.echo(click.style('\n--------- !! E R R O R !! ---------------------',fg='red',bold=True))  
+           click.echo(click.style('Enter teacher full name (string)',fg='red'))
+
+
+
+
+
+             
+          
+                        
+            #             #-------------------------------------------------------------
+            #             # brefore we add to the table, check if the record EXIST                       
+            #             does_record_exist= session.query(student_course).filter_by(students_id = stud_instance.id, courses_id = cours_instance.id).first()
+            #             #if does not exist, add to the table
+            #             if does_record_exist  is None:
+            #                 stud_instance.courses.append(cours_instance)
+            #                 session.commit()
+            #                 click.echo(click.style('\n-----registrations successfull------',fg='green'))
+       
+            #     else:# else if the course cannot be found in the courses table
+            #         click.echo(click.style('\n--------- !! E R R O R !! ---------------------',fg='red',bold=True))
+            #         click.echo(click.style('\n----course does not exist---',fg='red'))
+      
+            # else:#if the studetn instance cannot be found in the table
+            #     click.echo(click.style('\n--------- !! E R R O R !! ---------------------',fg='red',bold=True))  
+            #     click.echo(click.style('student does not Exist',fg='red'))
+
 
 
 

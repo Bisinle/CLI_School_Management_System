@@ -68,7 +68,8 @@ def add_student( first_name,last_name,gender):
 def delete_student(student_full_name):
     '''delete a student by passing their name'''
     #destructure and split the name to first and last
-    fname,lname= (student_full_name.split(' '))        
+    fname,lname= (student_full_name.split(' '))    
+    # check if the student exists    
     stud_instance = session.query(Student).filter(Student.first_name.like(f"%{fname.title()}%"), Student.last_name.like(f"%{lname.title()}%")).first()
     
     # delete the student fron student table
