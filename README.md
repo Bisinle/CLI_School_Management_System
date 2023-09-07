@@ -131,25 +131,25 @@ python main.py
 
 ## Entity Relationship
 
-<img src='../PROJECT/project_image/ERD.png' width='300' >
+<img src='./project_image/ERD.png' width='300' >
 
-#### Student Class:
+### Student Class:
 
 The Student class represents the "students" table in your database.
 It has a one-to-many relationship with the "grades" table. This means that each student can have multiple grades associated with them, typically from different courses.
 
-#### Teacher Class:
+### Teacher Class:
 
 The Teacher class corresponds to the "teachers" table in the database.
 There's no direct relationship defined in this class, but it's implied that teachers may be associated with courses through the "courses" table.
 
-#### Course Class:
+### Course Class:
 
 The Course class represents the "courses" table.
 It has a many-to-one relationship with the "teacher" table. This implies that multiple courses can be taught by a single teacher.
 It also has a many-to-many relationship with the "student" table. This suggests that multiple students can enroll in the same course, and a student can be enrolled in multiple courses.
 
-#### Grade Class:
+### Grade Class:
 
 The Grade class corresponds to the "grades" table in your database.
 It has a one-to-many relationship with the "students" table, meaning each grade entry is associated with a single student.
