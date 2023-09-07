@@ -12,6 +12,6 @@ metadata = MetaData(naming_convention=convention)
 
 Base = declarative_base(metadata=metadata)
 
-engine = create_engine('sqlite:///SMS.db')
+engine = create_engine('sqlite:///database/SMS.db')
 Session = sessionmaker(bind=engine)
 session = Session()

@@ -286,10 +286,6 @@ def grade_a_student(teacher_full_name):
                                 click.echo(click.style('\n----please Enter valid Marks---',fg='red'))
 
 
-
-
-
-
                     else:# else if the course cannot be found in the courses table
                         click.echo(click.style('\n--------- !! E R R O R !! ---------------------',fg='red',bold=True))
                         click.echo(click.style('\n----course does not exist---',fg='red'))

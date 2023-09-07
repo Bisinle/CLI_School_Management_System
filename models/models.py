@@ -30,7 +30,7 @@ class Grade(Base):
 
 
     def __repr__(self):
-        return f"('id':{self.id}, 'stud_name': {self.student.first_name}, 'course_name': {self.course.course_name}, 'marks; {self.mark}, 'grade': {self.grade})"
+        return f"('id':{self.id}, 'stud_id': {self.student_id}, 'course_id': {self.course_id}, 'marks; {self.mark}, 'grade': {self.grade})"
 
 
 
@@ -89,6 +89,21 @@ class Course(Base):
   
     def __repr__(self):
         return f"('id':{self.id}, 'course_name': {self.course_name}, 'room': {self.room}, 'credit_hours; {self.credit_hours}, 'teachers_is': {self.teachers_id})"
+    
+
+# class Admin(Base):
+#     __tablename__='admins'
+
+#     id = Column(Integer(), primary_key=True)
+#     name = Column(String())
+#     email = Column(String())
+#     password = Column(String())
+
+
+#     def __repr__(self):
+#         return f"('id':{self.id}, 'name': {self.name}, 'email': {self.email}, 'password; {self.password})"
+    
+
 
 
 

@@ -134,52 +134,63 @@ session.add_all(students_list)
 session.commit()
 
 
+# '''-------------POPULATINGA------------------A D M I N S----------------table'''
+# admin_list = []
+# for i in range(0,5):
+#     admin =Admin(
+#         name = fake.name(),
+#         email = fake.email(),
+#         password = fake.password()
+#     )
+#     admin_list.append(admin)
+# print(admin_list)
+# session.add_all(admin_list)
+# session.commit()
 
 
+# # get a student instance
+# stud1 = session.query(Student).all()[0]
+# stud2 = session.query(Student).all()[4]
+# stud3= session.query(Student).all()[7]
+# stud4 = session.query(Student).all()[3]
+# stud5 = session.query(Student).all()[4]
+# stud6= session.query(Student).all()[12]
+# stud7 = session.query(Student).all()[5]
+# stud8 = session.query(Student).all()[6]
+# stud9 = session.query(Student).all()[7]
+# stud10 = session.query(Student).all()[8]
+# stud11= session.query(Student).all()[9]
+# #get a course instance
+# course1 = session.query(Course).all()[0]
+# course2 = session.query(Course).all()[3]
+# course3 = session.query(Course).all()[2]
+# course4 = session.query(Course).all()[4]
+# course5 = session.query(Course).all()[5]
+# course6 = session.query(Course).all()[6]
+# course7 = session.query(Course).all()[7]
+# course8 = session.query(Course).all()[8]
+# course9 = session.query(Course).all()[9]
+# course10 = session.query(Course).all()[10]
+# # print(stud1)
+# # print('-----------------------------------')
+# # print(course1)
 
-# get a student instance
-stud1 = session.query(Student).all()[0]
-stud2 = session.query(Student).all()[4]
-stud3= session.query(Student).all()[7]
-stud4 = session.query(Student).all()[3]
-stud5 = session.query(Student).all()[4]
-stud6= session.query(Student).all()[12]
-stud7 = session.query(Student).all()[5]
-stud8 = session.query(Student).all()[6]
-stud9 = session.query(Student).all()[7]
-stud10 = session.query(Student).all()[8]
-stud11= session.query(Student).all()[9]
-#get a course instance
-course1 = session.query(Course).all()[0]
-course2 = session.query(Course).all()[3]
-course3 = session.query(Course).all()[2]
-course4 = session.query(Course).all()[4]
-course5 = session.query(Course).all()[5]
-course6 = session.query(Course).all()[6]
-course7 = session.query(Course).all()[7]
-course8 = session.query(Course).all()[8]
-course9 = session.query(Course).all()[9]
-course10 = session.query(Course).all()[10]
-# print(stud1)
-# print('-----------------------------------')
-# print(course1)
+# session.query(Grade).delete()
+# # create a grade instance and use it to test
+# grade1 = Grade(student= stud1, course=course1,mark=89, grade='A')
+# grade2 = Grade(student= stud2, course=course2,mark=30, grade='E')
+# grade3 = Grade(student= stud3, course=course3,mark=66, grade='C')
+# grade4 = Grade(student= stud4, course=course4,mark=20, grade='F')
+# grade5 = Grade(student= stud5, course=course5,mark=75, grade='A')
+# grade6 = Grade(student= stud6, course=course6,mark=90, grade='A')
+# grade7 = Grade(student= stud7, course=course7,mark=54, grade='C')
+# grade8 = Grade(student= stud8, course=course8,mark=47, grade='D')
+# grade9 = Grade(student= stud9, course=course9,mark=92, grade='A')
+# grade10 = Grade(student= stud10, course=course10,mark=12, grade='F')
 
-session.query(Grade).delete()
-# create a grade instance and use it to test
-grade1 = Grade(student= stud1, course=course1,mark=89, grade='A')
-grade2 = Grade(student= stud2, course=course2,mark=30, grade='E')
-grade3 = Grade(student= stud3, course=course3,mark=66, grade='C')
-grade4 = Grade(student= stud4, course=course4,mark=20, grade='F')
-grade5 = Grade(student= stud5, course=course5,mark=75, grade='A')
-grade6 = Grade(student= stud6, course=course6,mark=90, grade='A')
-grade7 = Grade(student= stud7, course=course7,mark=54, grade='C')
-grade8 = Grade(student= stud8, course=course8,mark=47, grade='D')
-grade9 = Grade(student= stud9, course=course9,mark=92, grade='A')
-grade10 = Grade(student= stud10, course=course10,mark=12, grade='F')
-
-session.add_all([grade1,grade2,grade3,grade4,grade5,grade6,grade7,grade8,grade9,grade10])
-session.commit()
-# print(grade1)
+# session.add_all([grade1,grade2,grade3,grade4,grade5,grade6,grade7,grade8,grade9,grade10])
+# session.commit()
+# # print(grade1)
 
 
 # # now that the association is set
