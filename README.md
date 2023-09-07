@@ -116,12 +116,15 @@ python main.py
 ## usage
 
 - after running the above commane, you should see this
+
   <img src='./project_image/grouped_commands.png'>
 
 - choose one of the displayed commands to diplay the specific options
+
   <img src='./project_image/all_course_commansts.png'>
 
 - add a course to the course table
+
   <img src='./project_image/interacting_with_course_commands.png'>
 
 ---
