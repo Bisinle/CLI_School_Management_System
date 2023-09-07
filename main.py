@@ -1,6 +1,6 @@
-from C_L_I.student  import student_section
-from C_L_I.teachers  import teacher_command
-from C_L_I.courses  import courcommand
+from cli.student  import student_section
+from cli.teachers  import teacher_command
+from cli.courses  import courcommand
 import click
 
 

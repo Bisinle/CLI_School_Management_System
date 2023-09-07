@@ -1,5 +1,16 @@
 #!/usr/bin/env python3
 
+
+
+import sys
+import os
+
+# Add the project_directory to the Python path
+project_directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(project_directory)
+
+# Now you can import from models
+
 from faker import Faker
 
 import random
@@ -126,48 +137,38 @@ session.commit()
 
 
 
-'''------populating the student_courses Association table-------'''
-# session.query(student_course).delete()
-# student_course_list = []
-# # this is many to many so we are free to choose the range
-# for i in range(100):
-#     # in each range, choose a random course
-#     random_course= random.randint(0,len(courses_list)-1)
-#     random_student= random.randint(0,len(students_list)-1)
-#     # choos a random student\
-#     student =students_list[random_student]
-#     course = courses_list[random_course]
-#     record = session.query(student_course).filter_by(courses_id= course.id,students_id = student.id).first()
-#     if record is None:
-#         student.courses.append(course)
-# # print(student_course_list)
+# # get a student instance
+# stud1 = session.query(Student).all()[0]
+# stud2 = session.query(Student).all()[4]
+# stud3= session.query(Student).all()[7]
+# stud4 = session.query(Student).all()[2]
+# #get a course instance
+# course1 = session.query(Course).all()[0]
+# course2 = session.query(Course).all()[3]
+# course3 = session.query(Course).all()[1]
+# course4 = session.query(Course).all()[9]
+# # print(stud1)
+# # print('-----------------------------------')
+# # print(course1)
+
+# session.query(Grade).delete()
+# # create a grade instance and use it to test
+# grade1 = Grade(student= stud1, course=course1,mark=89, grade='A')
+# grade2 = Grade(student= stud1, course=course2,mark=30, grade='E')
+# grade3 = Grade(student= stud3, course=course2,mark=66, grade='C')
+# grade4 = Grade(student= stud4, course=course4,mark=20, grade='F')
+
+# session.add_all([grade1,grade2,grade3,grade4])
 # session.commit()
+# # print(grade1)
 
 
-session.query(student_course).delete()
-student_course_list = []
-# this is many to many so we are free to choose the range
-
-for _ in range(100):
-    random_course = random.choice(courses_list)
-    random_student = random.choice(students_list)
-
-    # Check if the combination already exists
-    if random_course not in random_student.courses:
-        random_student.courses.append(random_course)
-
-# Commit the changes to the database
-session.commit()
-# print(student_course_list)
-# session.commit()
-records = session.query(student_course).all()
-empty_list=[]
-for i in records:
-    fount= (records.count(i))
-    
-    empty_list.append(fount)
-    
-print(empty_list)
-
-
-
+# # now that the association is set
+# # --- let's get the stud.grade
+# print(stud1.grade)
+# print('-----------------------------------')
+# # thru the association, we can access the courses the student is taking
+# print(stud1.courses)
+# print('-----------------------------------')
+# # thru the association, we can access the students that are taking this course
+# print(course2.students[0])

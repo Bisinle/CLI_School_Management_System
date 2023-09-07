@@ -2,12 +2,36 @@
 from database.Session_and_Base import *
 
 
-'''-----------------COURSE_STUDENT ASSOCIATION TABLE---------------------'''
-student_course = Table('student_course',
-                               Base.metadata,
-                               Column('courses_id', ForeignKey('courses.id')),
-                               Column('students_id', ForeignKey('students.id')),
-)
+
+
+# '''-----------------COURSE_STUDENT ASSOCIATION TABLE---------------------'''
+# student_course = Table('student_course',
+#                                Base.metadata,
+#                                Column('courses_id', ForeignKey('courses.id')),
+#                                Column('students_id', ForeignKey('students.id')),
+# )
+
+
+'''--------------- G R A D E S -------------T A B L E-------------------'''
+class Grade(Base):
+    __tablename__ = 'grades'
+    
+    id = Column(Integer(), primary_key=True)
+    student_id = Column('students_id', Integer(), ForeignKey('students.id'))
+    course_id = Column('courses_id', Integer(), ForeignKey('courses.id'))
+    mark=Column(Integer())
+    grade=Column(String(1))
+
+
+    # realtionships with the other models
+    student = relationship('Student',back_populates='grade')
+    course = relationship('Course',back_populates='grade')
+    extend_existing=True
+
+
+    def __repr__(self):
+        return f"('id':{self.id}, 'stud_name': {self.student.first_name}, 'course_name': {self.course.course_name}, 'marks; {self.mark}, 'grade': {self.grade})"
+
 
 
 
@@ -19,7 +43,8 @@ class Student(Base):
     first_name = Column(String())
     last_name = Column(String())
     gender = Column(String())
-    courses = relationship('Course', secondary=student_course, back_populates='students')
+    grade = relationship('Grade',  back_populates='student')
+    courses = association_proxy('grade', 'course')
     
 #---------------------------------------------------------------------------------
 
@@ -56,7 +81,10 @@ class Course(Base):
     room = Column(Integer())
     credit_hours = Column(Integer())
     teachers_id = Column(Integer(), ForeignKey('teachers.id'))
-    students = relationship('Student', secondary = student_course, back_populates='courses')
+    grade = relationship('Grade',  back_populates='course')
+    students = association_proxy('grade', 'student')
+
+   
 
   
     def __repr__(self):
@@ -65,4 +93,6 @@ class Course(Base):
 
 
 if __name__ =="__main__":
-    pass
+    '''----------testing model relationships-----------'''
+    # fetch a student instance
+  
