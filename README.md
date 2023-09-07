@@ -131,7 +131,7 @@ python main.py
 
 ## Entity Relationship
 
-<img src='./project_image/ERD.png' width='300' >
+<img src='./project_image/ERD.png' width='500' >
 
 ### Student Class:
 
