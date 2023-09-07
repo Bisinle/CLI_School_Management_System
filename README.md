@@ -16,15 +16,12 @@ this project strives to create a versatile SMS system that empowers admins to ef
 
 ## Table of Contents
 
-- [Prerequisites](#prerequisites)
 - [Features](#features)
+- [Prerequisites](#prerequisites)
 - [Project Setup](#project-setup)
-- [Entity Relationship Diagram](#entity-relationship-diagram)
 - [Usage](#usage)
-  - [Methods](#methods)
-    - [Restaurant](#restaurant)
-    - [Usage](#customer)
-    - [Review](#review)
+- [Entity Relationship ](#entity-relationship-diagram)
+  - [Relationships](#methods)
 - [Author & License](#author--license)
 
 ---
