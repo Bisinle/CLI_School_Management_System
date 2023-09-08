@@ -18,8 +18,8 @@ this project strives to create a versatile SMS system that empowers admins to ef
 - [Prerequisites](#prerequisites)
 - [Project Setup](#project-setup)
 - [Usage](#usage)
-- [Entity Relationship ](#entity-relationship-diagram)
-  - [Relationships](#methods)
+- [Entity Relationship ](#entity-relationshi)
+  - [Relationships](#Student-Class)
 - [Author & License](#author--license)
 
 ---
