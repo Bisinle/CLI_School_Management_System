@@ -11,7 +11,7 @@ import random
 
 
 
-@click.group(name='course-commands')
+@click.group(name='course')
 def courcommand():
     '''courses related commands'''
     pass

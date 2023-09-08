@@ -18,7 +18,7 @@ from database.Session_and_Base import *
 import click
 import random
 
-@click.group(name='student-commands')
+@click.group(name='student')
 def student_section():
     '''student related commans'''
     pass

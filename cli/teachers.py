@@ -11,9 +11,9 @@ import random
 
 
 
-@click.group(name='teacher-commands')
+@click.group(name='teacher')
 def teacher_command():
-    '''teachers database'''
+    '''teachers related commands'''
 # '''---------------A D D  TEACHER-------------------'''
 @teacher_command.command()
 @click.option("--first_name" ,'-fn',prompt='Enter FNAME', type = str)
